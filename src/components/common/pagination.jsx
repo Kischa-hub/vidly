@@ -1,6 +1,6 @@
 import React from "react";
 import _lodash from "lodash";
-import PropTypes from "prop-types";
+//import PropTypes from "prop-types";
 const Pagination = (props) => {
   //Objeckt distractring
   const { itemCount, pageSize, currentPage, onPageChanged } = props;
@@ -18,25 +18,25 @@ const Pagination = (props) => {
             className={page === currentPage ? "page-item active" : "page-item"}
             key={page}
           >
-            <a
+            <button
               className="page-link"
               onClick={() => onPageChanged(page)}
               style={{ cursor: "pointer" }}
             >
               {page}
-            </a>
+            </button>
           </li>
         ))}
       </ul>
     </nav>
   );
 
-  Pagination.propTypes = {
-    itemCount: PropTypes.number.isRequired,
-    pageSize: PropTypes.number.isRequired,
-    currentPage: PropTypes.number.isRequired,
-    onPageChanged: PropTypes.func.isRequired,
-  };
+  // Pagination.propTypes = {
+  //   itemCount: PropTypes.number.isRequired,
+  //   pageSize: PropTypes.number.isRequired,
+  //   currentPage: PropTypes.number.isRequired,
+  //   onPageChanged: PropTypes.func.isRequired,
+  // };
 };
 
 export default Pagination;

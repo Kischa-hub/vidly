@@ -1,5 +1,5 @@
-import { findLastIndex, sortedIndexOf } from "lodash";
-import React, { Component } from "react";
+//import _lodash from "lodash";
+import React from "react";
 
 const ListGroup = (props) => {
   const {
@@ -9,6 +9,7 @@ const ListGroup = (props) => {
     onItemSelect,
     selectedItem,
   } = props;
+
   return (
     <ul className="list-group">
       {items.map((item) => (
