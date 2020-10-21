@@ -49,29 +49,20 @@ class Movies extends Component {
     this.setState({ sortColumn });
   };
 
-  render() {
-    const { length: moviesCount } = this.state.movies;
-
-    //Object distructure
+  getPageData = () => {
     const {
-      movies,
+      movies: allMovies,
       pageSize,
       currentPage,
       SelectedGenre,
       sortColumn,
     } = this.state;
 
-    if (moviesCount === 0)
-      return (
-        <p className="badge m-2 badge-warning">
-          "there is no more Movie in the Database"
-        </p>
-      );
     //hier Movie Filtered
     const filtered =
       SelectedGenre && SelectedGenre._id
-        ? movies.filter((m) => m.genre._id === SelectedGenre._id)
-        : movies;
+        ? allMovies.filter((m) => m.genre._id === SelectedGenre._id)
+        : allMovies;
 
     //hier Movies Sorting
     const sorted = _lodash.orderBy(
@@ -81,7 +72,25 @@ class Movies extends Component {
     );
 
     //hier paging nammit das Filterdlist
-    const moviesPaging = paginate(sorted, currentPage, pageSize);
+    const paginatMovies = paginate(sorted, currentPage, pageSize);
+
+    return { totalCount: filtered.length, data: paginatMovies };
+  };
+
+  render() {
+    const { length: moviesCount } = this.state.movies;
+
+    //Object distructure
+    const { pageSize, currentPage, sortColumn } = this.state;
+
+    if (moviesCount === 0)
+      return (
+        <p className="badge m-2 badge-warning">
+          "there is no more Movie in the Database"
+        </p>
+      );
+
+    const { totalCount, data } = this.getPageData();
 
     return (
       <div className="row">
@@ -95,16 +104,16 @@ class Movies extends Component {
           />
         </div>
         <div className="col">
-          <p>Schowing {filtered.length} movies in the Database</p>
+          <p>Showing {totalCount} movies in the Database</p>
           <MoviesTable
             onDelete={this.handelDelete}
             onLike={this.handelLike}
-            movies={moviesPaging}
+            movies={data}
             onSort={this.handelSort}
             sortColumn={sortColumn}
           />
           <Pagination
-            itemCount={filtered.length}
+            itemCount={totalCount}
             pageSize={pageSize}
             currentPage={currentPage}
             onPageChanged={this.handelPageChange}
