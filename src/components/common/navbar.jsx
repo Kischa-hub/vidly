@@ -42,6 +42,11 @@ const NavBar = (Props) => {
                 Login
               </NavLink>
             </li>
+            <li>
+              <NavLink className="nav-link" to="/registerForm">
+                Register
+              </NavLink>
+            </li>
           </ul>
         </div>
       </nav>

@@ -5,7 +5,9 @@ import Pagination from "./common/pagination";
 import { paginate } from "../utils/paginat";
 import ListGroup from "../components/common/listGroup";
 import { getGenres } from "../services/fakeGenreService";
+import { Link } from "react-router-dom";
 import _lodash from "lodash";
+import SearchBox from "./common/searchBox";
 
 class Movies extends Component {
   state = {
@@ -13,6 +15,8 @@ class Movies extends Component {
     gernes: [], //getGenres(),
     pageSize: 3,
     currentPage: 1,
+    searchQuery: "",
+    selectedGenre: null,
     sortColumn: { path: "title", order: "asc" },
 
     //Object distruction
@@ -42,11 +46,15 @@ class Movies extends Component {
   };
 
   handelGenreSelect = (genre) => {
-    this.setState({ SelectedGenre: genre, currentPage: 1 });
+    this.setState({ selectedGenre: genre, searchQuery: "", currentPage: 1 });
   };
 
   handelSort = (sortColumn) => {
     this.setState({ sortColumn });
+  };
+
+  handelSearch = (query) => {
+    this.setState({ searchQuery: query, selectedGenre: null, currentPage: 1 });
   };
 
   getPageData = () => {
@@ -54,15 +62,21 @@ class Movies extends Component {
       movies: allMovies,
       pageSize,
       currentPage,
-      SelectedGenre,
+      selectedGenre,
       sortColumn,
+      searchQuery,
     } = this.state;
 
     //hier Movie Filtered
-    const filtered =
-      SelectedGenre && SelectedGenre._id
-        ? allMovies.filter((m) => m.genre._id === SelectedGenre._id)
-        : allMovies;
+    let filtered = allMovies;
+    if (searchQuery)
+      filtered = allMovies.filter((m) =>
+        m.title.toLowerCase().startsWith(searchQuery.toLowerCase())
+      );
+    else if (selectedGenre && selectedGenre._id)
+      filtered = allMovies.filter((m) => m.genre._id === selectedGenre._id);
+    // ? allMovies.filter((m) => m.genre._id === SelectedGenre._id)
+    // : allMovies;
 
     //hier Movies Sorting
     const sorted = _lodash.orderBy(
@@ -81,7 +95,7 @@ class Movies extends Component {
     const { length: moviesCount } = this.state.movies;
 
     //Object distructure
-    const { pageSize, currentPage, sortColumn } = this.state;
+    const { pageSize, currentPage, sortColumn, searchQuery } = this.state;
 
     if (moviesCount === 0)
       return (
@@ -100,11 +114,21 @@ class Movies extends Component {
             onItemSelect={this.handelGenreSelect}
             textProperty="name"
             valuePropert="_id"
-            selectedItem={this.state.SelectedGenre}
+            selectedItem={this.state.selectedGenre}
           />
         </div>
+
         <div className="col">
+          <Link
+            to="/movies/new"
+            className="btn btn-primary"
+            style={{ marginBottom: 20 }}
+          >
+            New Movie
+          </Link>
+
           <p>Showing {totalCount} movies in the Database</p>
+          <SearchBox value={searchQuery} onChange={this.handelSearch} />
           <MoviesTable
             onDelete={this.handelDelete}
             onLike={this.handelLike}

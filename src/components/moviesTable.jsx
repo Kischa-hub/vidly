@@ -34,16 +34,25 @@ class MoviesTable extends Component {
     },
   ];
 
+  handelClick = () => {
+    this.props.history.push("/newmovie");
+    //this.props.history.replace("/movies");
+    console.log("HALLOOOOO");
+    //console.log();
+  };
+
   render() {
     const { movies, sortColumn, onSort } = this.props;
 
     return (
-      <Table
-        columns={this.columns}
-        data={movies}
-        sortColumn={sortColumn}
-        onSort={onSort}
-      />
+      <React.Fragment>
+        <Table
+          columns={this.columns}
+          data={movies}
+          sortColumn={sortColumn}
+          onSort={onSort}
+        />
+      </React.Fragment>
     );
   }
 }
